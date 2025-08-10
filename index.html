@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Portfolio - SongEun Park</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutral Harmony -->
+    <!-- Application Structure Plan: The application is designed as a top-down narrative journey. It starts with a high-level summary and key skills. The core of the app is the 'Project Deep Dive' section, which is filterable by company. This structure allows users to get a quick overview and then interactively explore the details that are most relevant to them, rather than a static, linear read. This dashboard-like approach enhances usability by putting the user in control of the information they consume. -->
+    <!-- Visualization & Content Choices: 
+        - Skills & Tools (HTML/CSS Grid): Goal is to inform about technical capabilities. A categorized grid layout provides a quick, organized scan of skills.
+        - Project Details (Filterable Cards - JS): Goal is to organize detailed project information. Cards allow for a modular presentation, and JS filtering by company enables users to focus on specific experiences.
+        - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans KR', sans-serif;
+            background-color: #FDFBF8;
+            color: #4A4A4A;
+        }
+        .nav-button {
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-button.active, .nav-button:hover {
+            color: #D97706; /* amber-600 */
+            border-bottom-color: #D97706;
+        }
+        .project-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .filter-btn.active {
+            background-color: #D97706;
+            color: white;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-amber-700">SongEun Park's Portfolio</h1>
+            <div class="flex items-center space-x-6">
+                <a href="#summary" class="nav-button font-medium">Summary</a>
+                <a href="#projects" class="nav-button font-medium">Projects</a>
+                <a href="#skills" class="nav-button font-medium">Skills</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        
+        <!-- Summary Section -->
+        <section id="summary" class="mb-24 scroll-mt-24">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold text-gray-800 mb-4">Data-Driven Problem Solver</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">A meticulous and results-oriented data professional with over 4 years of experience in data analysis, CRM strategy, and process automation. Proven ability to leverage Python, SAS, and SQL to drive business growth and operational efficiency.</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8 text-center">
+                <div class="bg-white p-6 rounded-lg shadow-sm">
+                    <h3 class="text-xl font-bold text-amber-700 mb-2">Data Analysis & Strategy</h3>
+                    <p class="text-gray-600">Transforming complex data into actionable insights for strategic decision-making.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-sm">
+                    <h3 class="text-xl font-bold text-amber-700 mb-2">Process Automation</h3>
+                    <p class="text-gray-600">Designing and implementing automated systems to enhance productivity and reduce costs.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-sm">
+                    <h3 class="text-xl font-bold text-amber-700 mb-2">AI & DT Implementation</h3>
+                    <p class="text-gray-600">Building and managing AI platforms to internalize technology and improve quality control.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects" class="mb-24 scroll-mt-24">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold text-gray-800 mb-4">Project Deep Dive</h2>
+                 <p class="text-lg text-gray-600 max-w-3xl mx-auto">Explore a detailed portfolio of projects undertaken. Use the filters below to navigate through experiences at different companies and discover the challenges, solutions, and technologies involved in each initiative.</p>
+            </div>
+
+            <div class="flex justify-center mb-8 space-x-2">
+                <button class="filter-btn px-4 py-2 rounded-full font-medium transition active" data-filter="all">All</button>
+                <button class="filter-btn px-4 py-2 rounded-full font-medium transition" data-filter="Innocean">Innocean</button>
+                <button class="filter-btn px-4 py-2 rounded-full font-medium transition" data-filter="SK Nexilis">SK Nexilis</button>
+                <button class="filter-btn px-4 py-2 rounded-full font-medium transition" data-filter="Celltrion">Celltrion</button>
+            </div>
+
+            <div id="project-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Project cards will be injected here by JavaScript -->
+            </div>
+        </section>
+        
+        <!-- Skills Section -->
+        <section id="skills" class="scroll-mt-24">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold text-gray-800 mb-4">Technical Skills & Tools</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">A curated list of technical competencies and tools utilized across various projects, showcasing a versatile and robust skill set in data science, analytics, and automation.</p>
+            </div>
+            <div class="bg-white p-8 rounded-lg shadow-lg">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                    <div>
+                        <h3 class="font-bold text-lg mb-3 text-amber-700">Programming & Databases</h3>
+                        <ul class="space-y-2 text-gray-600">
+                            <li>Python</li>
+                            <li>SAS</li>
+                            <li>SQL</li>
+                            <li>VBA</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-lg mb-3 text-amber-700">Analytics & BI</h3>
+                        <ul class="space-y-2 text-gray-600">
+                            <li>Google Analytics 4</li>
+                            <li>Tableau</li>
+                            <li>Generic BI Tools</li>
+                            <li>Excel</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-lg mb-3 text-amber-700">Automation & AI</h3>
+                        <ul class="space-y-2 text-gray-600">
+                            <li>Automation Anywhere</li>
+                            <li>Vision AI Modeling</li>
+                            <li>Data Augmentation</li>
+                            <li>Generative AI</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-lg mb-3 text-amber-700">Data Management</h3>
+                        <ul class="space-y-2 text-gray-600">
+                            <li>Medidata</li>
+                            <li>Clinical Data Validation</li>
+                            <li>Data Preprocessing</li>
+                            <li>KPI Development</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-800 text-white mt-24">
+        <div class="container mx-auto px-6 py-8 text-center">
+            <p>&copy; 2025 SongEun Park. All Rights Reserved.</p>
+            <p class="text-sm text-gray-400 mt-2">This is an interactive portfolio generated based on a professional experience report.</p>
+        </div>
+    </footer>
+
+    <script>
+        const projectData = [
+            {
+                company: 'Innocean',
+                title: 'GA4-Based Web Behavior Analysis',
+                description: 'Strengthened web analytics capabilities and established a monitoring framework to identify sales-contributing factors.',
+                tools: ['GA4', 'Python', 'BI Tools']
+            },
+            {
+                company: 'SK Nexilis',
+                title: 'Automated Statistical Analysis System',
+                description: 'Reduced engineer work hours by 50% and achieved 100% user satisfaction with new automated analysis dashboards.',
+                tools: ['Python', 'Tableau', 'SQL']
+            },
+            {
+                company: 'SK Nexilis',
+                title: 'Company-Wide Business Process Automation',
+                description: 'Saved 5,000 work hours annually by building and deploying a company-wide automation system.',
+                tools: ['VBA', 'Automation Anywhere']
+            },
+            {
+                company: 'SK Nexilis',
+                title: 'AI Platform for Defect Inspection',
+                description: 'Reduced inspection workforce by 50% and improved cost-efficiency with a centralized AI-driven system.',
+                tools: ['Python', 'Vision AI']
+            },
+            {
+                company: 'SK Nexilis',
+                title: 'Defect Cause & Process Factor Analysis',
+                description: 'Identified faulty equipment and root causes for defects through data analysis, supporting production decisions.',
+                tools: ['Python', 'Pandas', 'Matplotlib']
+            },
+            {
+                company: 'Celltrion',
+                title: 'Clinical Trial Data Management',
+                description: 'Achieved 100% data accuracy and reduced preprocessing time by 50% with an automated program.',
+                tools: ['SQL', 'SAS', 'Medidata']
+            },
+            {
+                company: 'Celltrion',
+                title: 'Clinical Trial Site Management Support',
+                description: 'Minimized site risks and achieved 100% success in patient recruitment and data validation targets.',
+                tools: ['SQL', 'SAS', 'Medidata']
+            }
+        ];
+
+        function renderProjects(filter = 'all') {
+            const grid = document.getElementById('project-grid');
+            grid.innerHTML = '';
+            const filteredProjects = filter === 'all'
+                ? projectData
+                : projectData.filter(p => p.company === filter);
+
+            filteredProjects.forEach(project => {
+                const card = document.createElement('div');
+                card.className = 'project-card bg-white p-6 rounded-lg shadow-md';
+                card.innerHTML = `
+                    <h3 class="font-bold text-xl mb-2 text-gray-800">${project.title}</h3>
+                    <p class="text-amber-600 font-semibold text-sm mb-3">${project.company}</p>
+                    <p class="text-gray-600 mb-4">${project.description}</p>
+                    <div class="flex flex-wrap gap-2">
+                        ${project.tools.map(tool => `<span class="bg-amber-100 text-amber-800 text-xs font-medium px-2.5 py-0.5 rounded-full">${tool}</span>`).join('')}
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initial render
+            renderProjects();
+
+            // Filter buttons
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            filterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    renderProjects(button.dataset.filter);
+                });
+            });
+            
+            // Nav scrolling
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
